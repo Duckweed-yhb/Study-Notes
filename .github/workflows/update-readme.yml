@@ -1,0 +1,74 @@
+name: Auto Update README
+# 触发条件：推代码到 main 分支，且排除 README.md 自身的修改（避免循环触发）
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["README.md"]
+
+# 赋予 Actions 提交代码的权限
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest # 使用 Ubuntu 服务器运行
+    steps:
+      # 步骤1：拉取仓库最新代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 拉取完整提交历史
+
+      # 步骤2：安装 tree 工具（用于生成目录结构）
+      - name: Install tree command
+        run: sudo apt-get update && sudo apt-get install -y tree
+
+      # 步骤3：生成最新目录结构并替换 README 中的对应部分
+      - name: Generate and replace directory structure
+        run: |
+          # 生成目录树：只显示文件夹和文件，排除 .git/.github 等无关目录
+          tree --dirsfirst --noreport -I ".git|.github|node_modules|__pycache__" -L 4 > temp_dir.md
+
+          # 替换 README 中「## 目录结构」后的代码块
+          # 先删除原有目录结构，再插入新的
+          sed -i '/## 目录结构/{
+            :a
+            N
+            /```/!ba
+            s/.*\n/## 目录结构\n```\n/
+          }' README.md
+
+          # 将新目录树插入到 README 的目录结构代码块中
+          sed -i "/## 目录结构\n```/r temp_dir.md" README.md
+
+          # 在目录树后补充闭合的 ```
+          sed -i "/$(cat temp_dir.md)/a ```" README.md
+
+          # 删除临时文件
+          rm -f temp_dir.md
+
+      # 步骤4：更新最后更新时间
+      - name: Update last modified time
+        run: |
+          # 获取当前日期（格式：YYYY-MM-DD）
+          CURRENT_DATE=$(date +"%Y-%m-%d")
+          # 替换 README 中「📅 最后更新：」后的日期
+          sed -i "s/📅 最后更新：.*/📅 最后更新：$CURRENT_DATE/" README.md
+
+      # 步骤5：提交并推送修改后的 README
+      - name: Commit and push changes
+        run: |
+          # 配置 Git 用户名和邮箱（Actions 机器人身份）
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 检查 README 是否有修改
+          if git diff --quiet README.md; then
+            echo "README 无需更新，跳过提交"
+          else
+            # 提交修改
+            git add README.md
+            git commit -m "chore: auto update README (directory + update time)"
+            # 推送修改到仓库
+            git push
+          fi
