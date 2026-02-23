@@ -44,6 +44,16 @@
 
 ## 目录结构
 ```
+.
+├── 概率论与数理统计
+│   ├── guidao.mp4
+│   ├── 七种常用分布表.jpg
+│   ├── 概率论与数理统计笔记.pdf
+│   └── 概率论与数理统计笔记.tex
+├── LICENSE
+├── README.md
+└── temp_dir.md
+```
 Study-Notes/
 ├── Basic-Courses/       # 基础理论课笔记
 │   ├── Probability-And-Statistics/  # 概率论与数理统计
