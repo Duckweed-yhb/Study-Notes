@@ -44,7 +44,7 @@
 
 ## 目录结构
 ```
-.
+Study_Note
 ├── 概率论与数理统计
 │   ├── guidao.mp4
 │   ├── 七种常用分布表.jpg
@@ -54,17 +54,8 @@
 ├── README.md
 └── temp_dir.md
 ```
-Study-Notes/
-├── Basic-Courses/       # 基础理论课笔记
-│   ├── Probability-And-Statistics/  # 概率论与数理统计
-│   └── College-Physics/             # 大学物理
-├── Major-Courses/       # 专业核心课笔记
-├── Tech-Practice/       # 编程与嵌入式实践
-│   ├── C-Cpp/           # C/C++ 编程
-│   ├── Embedded/        # 嵌入式开发
-│   └── Tools/           # 工具使用笔记（Git/LaTeX）
-└── README.md            # 仓库说明文档
-```
+
+
 
 ## 维护说明
 - 笔记更新：随课程进度和学习计划持续补充，优先完善核心课程与高频使用的技术内容。
